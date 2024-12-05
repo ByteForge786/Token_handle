@@ -1,3 +1,24 @@
+# Initialize token manager
+@st.cache_resource
+def get_token_manager():
+    token_manager = TokenManager(token_url=TOKEN_URL)
+    # Force initialize session state variables on every page load
+    if 'token_request_count' not in st.session_state:
+        st.session_state.token_request_count = 0
+    if 'token_refresh_count' not in st.session_state:
+        st.session_state.token_refresh_count = 0
+    if 'token_error_count' not in st.session_state:
+        st.session_state.token_error_count = 0
+    if 'token' not in st.session_state:
+        st.session_state.token = None
+    if 'last_refresh' not in st.session_state:
+        st.session_state.last_refresh = None
+    return token_manager
+
+# Get token manager instance
+token_manager = get_token_manager()
+
+
 import streamlit as st
 import pandas as pd
 import os
