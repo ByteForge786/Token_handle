@@ -1,4 +1,30 @@
-def _fetch_new_token(self):
+import streamlit as st
+import requests
+from datetime import datetime, timedelta
+
+class TokenManager:
+    def __init__(self, token_url, cache_duration_minutes=3):
+        print(f"\n📋 Initializing TokenManager")
+        print(f"Token URL: {token_url}")
+        print(f"Cache Duration: {cache_duration_minutes} minutes")
+        
+        self.token_url = token_url
+        self.cache_duration = timedelta(minutes=cache_duration_minutes)
+        
+        # Initialize token state
+        if 'token' not in st.session_state:
+            print("🆕 Creating new token state")
+            st.session_state.token = None
+            st.session_state.last_refresh = None
+            st.session_state.token_request_count = 0
+            st.session_state.token_refresh_count = 0
+            st.session_state.token_error_count = 0
+        else:
+            print("♻️ Reusing existing token state")
+            print(f"Previous request count: {st.session_state.token_request_count}")
+            print(f"Previous refresh count: {st.session_state.token_refresh_count}")
+
+    def _fetch_new_token(self):
         """Fetch a new token from the token URL."""
         st.session_state.token_refresh_count += 1
         
